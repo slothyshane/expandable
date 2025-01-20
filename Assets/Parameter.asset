@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc4000944b810864398431ef22367349, type: 3}
+  m_Name: Parameter
+  m_EditorClassIdentifier: 
+  growthRate: 1
+  shirnkRate: 1
+  maxRadius: 1.275
+  minRadius: 0.85
+  adhesionStrength: 15
+  maxAdhesionForce: 20
+  adhesionRangeMax: 1.5
+  rows: 8
+  columns: 8
+  rowsToShrink: 2
+  delayIntervalParameterExpand: 2
+  delayIntervalParameterShrink: 0.2
+  radiusCommunication: 2
+  robotsToBeRemoved: []

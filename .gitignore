@@ -1,0 +1,16 @@
+Logs/
+obj/
+Temp/
+Library/
+Recordings/
+.vs
+*.vsidx
+Unity.2D.Sprite.Editor.csproj
+Unity.2D.Tilemap.Editor.csproj
+UnityEditor.UI.csproj
+UnityEngine.UI.csproj
+UserSettings/EditorUserSettings.asset
+UserSettings/Layouts/CurrentMaximizeLayout.dwlt
+UserSettings/Layouts/default-2022.dwlt
+UserSettings/Search.index
+UserSettings/Search.settings
