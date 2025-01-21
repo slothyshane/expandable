@@ -18,7 +18,6 @@ public static class Utils
 
         Debug.Log("dr: " + dr + " dc: " + dc);
 
-
         //check if dr is close to 0
         if (Mathf.Abs(dr) < 0.01)
         {

@@ -92,6 +92,25 @@ public class RobotManager : MonoBehaviour
         return robots;
     }
 
+    public List<RobotSingular> FindRobotInlineExclude(Vector2 start, Vector2 end)
+    {
+        List<RobotSingular> robots = new List<RobotSingular>();
+        Vector2 direction = end - start;
+        float distance = Vector2.Distance(start, end);
+        RaycastHit2D[] hits = Physics2D.RaycastAll(start, direction, distance);
+        if (hits.Length > 0)
+        {
+            foreach (RaycastHit2D hit in hits)
+            {
+                if (hit.collider != null)
+                {
+                    robots.Add(hit.collider.gameObject.GetComponent<RobotSingular>());
+                }
+            }
+        }
+        return robots;
+    }
+
     public List<RobotSingular> FindRobotInlineInclude(RobotSingular startRobot, RobotSingular endRobot)
     {
         List<RobotSingular> robots = new List<RobotSingular>();
@@ -111,6 +130,131 @@ public class RobotManager : MonoBehaviour
                 }
             }
         }
+        return robots;
+    }
+
+    public List<RobotSingular> FindRobotInlineInclude(Vector2 start, Vector2 end)
+    {
+        List<RobotSingular> robots = new List<RobotSingular>();
+        Vector2 direction = end - start;
+        float distance = Vector2.Distance(start, end);
+        RaycastHit2D[] hits = Physics2D.RaycastAll(start, direction, distance);
+        if (hits.Length > 0)
+        {
+            foreach (RaycastHit2D hit in hits)
+            {
+                if (hit.collider != null)
+                {
+                    robots.Add(hit.collider.gameObject.GetComponent<RobotSingular>());
+                }
+            }
+        }
+        return robots;
+    }
+
+    public List<Vector2> FindParallelRobots(RobotSingular start, RobotSingular end, int layer)
+    {
+        List<Vector2> robots = new List<Vector2>();
+        Vector3 startPos = start.transform.position;
+        Vector3 endPos = end.transform.position;
+        Vector3 directionToMove = endPos - startPos;
+        Vector3 directionToMoveOpposite = startPos - endPos;
+        float radiusRobot = start.GetComponent<CircleCollider2D>().radius;
+        float offset;
+        Vector2 shrinkStartSide1;
+        Vector2 shrinkEndSide1;
+        Vector2 shrinkStartSide2;
+        Vector2 shrinkEndSide2;
+        if (Mathf.Abs(startPos.x - endPos.x) >= Mathf.Abs(startPos.y - endPos.y))
+        {
+            
+            if (startPos.x < endPos.x)
+            {
+                offset = radiusRobot * layer;
+            }
+            else
+            {
+                offset = -radiusRobot * layer;
+            }
+            shrinkStartSide1 = new Vector2(startPos.x - offset, startPos.y + radiusRobot * 2 * layer);
+            shrinkEndSide1 = new Vector2(endPos.x + offset, endPos.y + radiusRobot * 2 * layer);
+            shrinkStartSide2 = new Vector2(startPos.x - offset, startPos.y - radiusRobot * 2 * layer);
+            shrinkEndSide2 = new Vector2(endPos.x + offset, endPos.y - radiusRobot * 2 * layer);
+        }
+        else
+        {
+            if (startPos.y < endPos.y)
+            {
+                offset = radiusRobot * layer;
+            }
+            else
+            {
+                offset = -radiusRobot * layer;
+            }
+            shrinkStartSide1 = new Vector2(startPos.x + radiusRobot * 2 * layer, startPos.y - offset);
+            shrinkEndSide1 = new Vector2(endPos.x + radiusRobot * 2 * layer, endPos.y + offset);
+            shrinkStartSide2 = new Vector2(startPos.x - radiusRobot * 2 * layer, startPos.y - offset);
+            shrinkEndSide2 = new Vector2(endPos.x - radiusRobot * 2 * layer, endPos.y + offset);
+        }
+
+        // add to the list
+        robots.Add(shrinkStartSide1);
+        robots.Add(shrinkEndSide1);
+        robots.Add(shrinkStartSide2);
+        robots.Add(shrinkEndSide2);
+        return robots;
+    }
+
+    public List<Vector2> FindParallelRobots(Vector3 start, Vector3 end, int layer, float radius)
+    {
+        List<Vector2> robots = new List<Vector2>();
+        Vector3 startPos = start;
+        Vector3 endPos = end;
+        Vector3 directionToMove = endPos - startPos;
+        Vector3 directionToMoveOpposite = startPos - endPos;
+        float radiusRobot = radius;
+        float offset;
+        Vector2 shrinkStartSide1;
+        Vector2 shrinkEndSide1;
+        Vector2 shrinkStartSide2;
+        Vector2 shrinkEndSide2;
+        if (Mathf.Abs(startPos.x - endPos.x) >= Mathf.Abs(startPos.y - endPos.y))
+        {
+
+            if (startPos.x < endPos.x)
+            {
+                offset = radiusRobot * layer;
+            }
+            else
+            {
+                offset = -radiusRobot * layer;
+            }
+            shrinkStartSide1 = new Vector2(startPos.x - offset, startPos.y + radiusRobot * 2 * layer);
+            shrinkEndSide1 = new Vector2(endPos.x + offset, endPos.y + radiusRobot * 2 * layer);
+            shrinkStartSide2 = new Vector2(startPos.x - offset, startPos.y - radiusRobot * 2 * layer);
+            shrinkEndSide2 = new Vector2(endPos.x + offset, endPos.y - radiusRobot * 2 * layer);
+        }
+        else
+        {
+            if (startPos.y < endPos.y)
+            {
+                offset = radiusRobot * layer;
+            }
+            else
+            {
+                offset = -radiusRobot * layer;
+            }
+            shrinkStartSide1 = new Vector2(startPos.x + radiusRobot * 2 * layer, startPos.y - offset);
+            shrinkEndSide1 = new Vector2(endPos.x + radiusRobot * 2 * layer, endPos.y + offset);
+            shrinkStartSide2 = new Vector2(startPos.x - radiusRobot * 2 * layer, startPos.y - offset);
+            shrinkEndSide2 = new Vector2(endPos.x - radiusRobot * 2 * layer, endPos.y + offset);
+        }
+
+        // add to the list
+        robots.Add(shrinkStartSide1);
+        robots.Add(shrinkEndSide1);
+        robots.Add(shrinkStartSide2);
+        robots.Add(shrinkEndSide2);
         return robots;
     }
 

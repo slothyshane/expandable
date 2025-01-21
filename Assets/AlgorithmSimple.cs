@@ -34,8 +34,6 @@ public class AlgorithmSimple : MonoBehaviour
 
     private void Awake()
     {
-        delay_interval_parameter_expand = parmeters.delayIntervalParameterExpand;
-        delay_interval_parameter_shrink = parmeters.delayIntervalParameterShrink;
         rows_to_shrink = parmeters.rowsToShrink;
         camera = Camera.main;
     }
@@ -99,34 +97,34 @@ public class AlgorithmSimple : MonoBehaviour
         RobotSingular end = RobotManager.RightClickOnRobot();
         if (end != null)
         {
-            end.GetComponent<SpriteRenderer>().color = Color.green;
+           end.ChangeColor("green");
         }
-
 
         // both robots have been clicked. this is where the algorithm starts
         if (start != null && end != null && pathFound == false) 
         {
-           
-            Transform startTransform = GameObject.Find("Robot" + start).transform;
-            Transform endTransform = GameObject.Find("Robot" + end).transform;
+            Transform startTransform = start.transform;
+            Transform endTransform = end.transform;
 
             // get the pose of start
-            Vector2 start_pos = startTransform.position;
-            Vector2 end_pos = endTransform.position;
+            Vector2 startPos = startTransform.position;
+            Vector2 endPos = endTransform.position;
 
-            if (Utils.CheckInline(start_pos, end_pos)) {
-                inlineMotionGenerate(startTransform.position, endTransform.position);
+            if (Utils.CheckInline(startPos, endPos)) {
+                List<RobotSingular> robots = RobotManager.FindRobotInlineInclude(start, end);
+                RobotManager.InchingForward(robots);
+
             }
             else
             {
-                List<Vector3> disjunct_motion = get_inline_transform(startTransform.position, endTransform.position);
+                //List<Vector3> disjunct_motion = get_inline_transform(startTransform.position, endTransform.position);
 
-                for (int i = 0; i < disjunct_motion.Count; i += 2)
-                    {
-                        Vector3 startPos_new = disjunct_motion[i];
-                        Vector3 endPos_new = disjunct_motion[i + 1];
-                        inlineMotionGenerate(startPos_new, endPos_new);
-                    }
+                //for (int i = 0; i < disjunct_motion.Count; i += 2)
+                //    {
+                //        Vector3 startPos_new = disjunct_motion[i];
+                //        Vector3 endPos_new = disjunct_motion[i + 1];
+                //        inlineMotionGenerate(startPos_new, endPos_new);
+                //    }
             }
         }
     }
@@ -152,12 +150,6 @@ public class AlgorithmSimple : MonoBehaviour
 
 
         }
-
-       
-        Debug.Log("start_pos_first: " + start_pos_first);   
-        Debug.Log("start_pos_second: " + start_pos_second);
-        Debug.Log("end_pos_first: " + end_pos_first);
-        Debug.Log("end_pos_second: " + end_pos_second);
 
         transforms.Add(start_pos_first);
         transforms.Add(end_pos_first);
