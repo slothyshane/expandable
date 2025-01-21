@@ -19,8 +19,8 @@ MonoBehaviour:
   adhesionStrength: 15
   maxAdhesionForce: 20
   adhesionRangeMax: 1.5
-  rows: 8
-  columns: 8
+  rows: 4
+  columns: 4
   rowsToShrink: 2
   delayIntervalParameterExpand: 2
   delayIntervalParameterShrink: 0.2

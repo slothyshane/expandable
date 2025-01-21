@@ -152,9 +152,9 @@ public class RobotManager : MonoBehaviour
         return robots;
     }
 
-    public List<Vector2> FindParallelRobots(RobotSingular start, RobotSingular end, int layer)
+    public List<RobotSingular> FindParallelRobots(RobotSingular start, RobotSingular end, int layer)
     {
-        List<Vector2> robots = new List<Vector2>();
+        List<RobotSingular> robots = new List<RobotSingular>();
         Vector3 startPos = start.transform.position;
         Vector3 endPos = end.transform.position;
         Vector3 directionToMove = endPos - startPos;
@@ -197,11 +197,17 @@ public class RobotManager : MonoBehaviour
             shrinkEndSide2 = new Vector2(endPos.x - radiusRobot * 2 * layer, endPos.y + offset);
         }
 
+        // find the robots
+        RobotSingular robot1 = FindRobotByPos(shrinkStartSide1);
+        RobotSingular robot2 = FindRobotByPos(shrinkEndSide1);
+        RobotSingular robot3 = FindRobotByPos(shrinkStartSide2);
+        RobotSingular robot4 = FindRobotByPos(shrinkEndSide2);
+
         // add to the list
-        robots.Add(shrinkStartSide1);
-        robots.Add(shrinkEndSide1);
-        robots.Add(shrinkStartSide2);
-        robots.Add(shrinkEndSide2);
+        robots.Add(robot1);
+        robots.Add(robot2);
+        robots.Add(robot3);
+        robots.Add(robot4);
         return robots;
     }
 
@@ -329,6 +335,17 @@ public class RobotManager : MonoBehaviour
                 RobotSingular robot = hit.collider.gameObject.GetComponent<RobotSingular>();
                 return robot;
             }
+        }
+        return null;
+    }
+
+    public RobotSingular FindRobotByPos(Vector2 pos) {
+        RobotSingular robot;
+        Collider2D collider = Physics2D.OverlapPoint(pos);
+        if (collider != null)
+        {
+            robot = collider.gameObject.GetComponent<RobotSingular>();
+            return robot;
         }
         return null;
     }

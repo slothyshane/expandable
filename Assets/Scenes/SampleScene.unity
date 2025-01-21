@@ -131,13 +131,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 40581406}
+  - component: {fileID: 40581407}
   m_Layer: 0
-  m_Name: centralized_controller
+  m_Name: Algorithm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &40581406
 Transform:
   m_ObjectHideFlags: 0
@@ -153,6 +154,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &40581407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 40581404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69184cdd521b39745b3c1a0b652e581e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parmeters: {fileID: 11400000, guid: 239e14a2f294b1748a98356df102d2e4, type: 2}
+  RobotManager: {fileID: 1954801766}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
