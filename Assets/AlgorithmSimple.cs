@@ -139,6 +139,7 @@ public class AlgorithmSimple : MonoBehaviour
                 //        inlineMotionGenerate(startPos_new, endPos_new);
                 //    }
             }
+            pathFound = true;
         }
     }
 

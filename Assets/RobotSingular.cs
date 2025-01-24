@@ -342,7 +342,7 @@ public class RobotSingular : MonoBehaviour
     private void CalculateForce() {
        
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, circleCollider.radius * transform.lossyScale.x * adhesionRangeMax, adhesionLayer); // get all the possible interactions
-
+        totalForce = Vector2.zero;
         foreach (Collider2D collider in colliders)
         {
 
@@ -365,45 +365,43 @@ public class RobotSingular : MonoBehaviour
                 Vector2 direction = (rb.position - Rigidbody2D.position);
                 float dist = direction.magnitude - colliderWorldRadius - colColliderWorldRadius;
 
-                if (dist < 0.01)
+                //clip the distance to min 0.01
+                dist = Mathf.Clamp(dist, 0.01f, dist);
+                if (dist > adhesionRangeMax * colliderWorldRadius) // skip if the distance is greater than the adhesion range
                 {
-                    dist = 0.01f;
+                    continue;
                 }
 
                 float forceMag = adhesionStrength / (dist);
 
-                float colRadiusNorm = colColliderWorldRadius; /// (colliderRadiusInit * maxRadius);
-                float radiusNorm = colliderWorldRadius; /// (colliderRadiusInit * maxRadius);
+                float colRadiusNorm = colColliderWorldRadius; 
+                float radiusNorm = colliderWorldRadius;
+                // the similarity score is calculated based on the difference in the radius
                 if (Mathf.Abs(colRadiusNorm - radiusNorm) > 0.9 * radiusDiff)
                 {
-                    shapeSimilarityFactor = 0.001f;
+                    shapeSimilarityFactor = 0.1f;
                 }
                 else
-                    shapeSimilarityFactor = 1 - Mathf.Clamp((Mathf.Abs(colRadiusNorm - radiusNorm) * (1 / radiusDiff)), 0f, 0.999f);
+                    shapeSimilarityFactor = 1 - Mathf.Clamp((Mathf.Abs(colRadiusNorm - radiusNorm) * (1 / radiusDiff)), 0f, 0.9f);
 
                 forceMag = Mathf.Clamp(forceMag, 0, maxAdhesionForce);
                 forceMag = forceMag * shapeSimilarityFactor;
                 Vector2 force = direction.normalized * forceMag;
-
-                if (dist > ((colliderRadiusInit) / 2f))
-                {
-                    force = Vector2.zero;
-                }
+                //clear the forces 
 
                 Rigidbody2D.AddForce(force, ForceMode2D.Force);
 
                 totalForce += force;
 
                 // UPDATE the force
-                // convert it to int 
-                if (stateQueue.Count > 0)
-                {
-                    int totalForceInt = (int)totalForce.magnitude;
-                    textComponent.text = totalForceInt.ToString();
-                }
+
+                int totalForceInt = (int)totalForce.magnitude;
+                textComponent.text = totalForceInt.ToString();
+                
             }
         }
 
+        // simulate friction
         if (Rigidbody2D.velocity.magnitude > 0.01)
         {
             //reduce the velocity
