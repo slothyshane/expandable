@@ -5,7 +5,7 @@ MonoImporter:
   serializedVersion: 2
   defaultReferences:
   - parmeters: {fileID: 11400000, guid: 239e14a2f294b1748a98356df102d2e4, type: 2}
-  executionOrder: 300
+  executionOrder: 500
   icon: {instanceID: 0}
   userData: 
   assetBundleName: 

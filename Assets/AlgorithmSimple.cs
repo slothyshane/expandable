@@ -106,6 +106,7 @@ public class AlgorithmSimple : MonoBehaviour
         // both robots have been clicked. this is where the algorithm starts
         if (start != null && end != null && pathFound == false) 
         {
+            Debug.Log("executing once");
             Transform startTransform = start.transform;
             Transform endTransform = end.transform;
 
@@ -121,9 +122,10 @@ public class AlgorithmSimple : MonoBehaviour
                 RobotSingular robot2 = robotShrink[1];
                 RobotSingular robot3 = robotShrink[2];
                 RobotSingular robot4 = robotShrink[3];
+
                 List<RobotSingular> robotShrinkLayer1a = RobotManager.FindRobotInlineInclude(robot1, robot2);
                 List<RobotSingular> robotShrinkLayer1b = RobotManager.FindRobotInlineInclude(robot3, robot4);
-                
+
                 RobotManager.InchingForward(robotExpand);
                 RobotManager.InchingForwardReverse(robotShrinkLayer1a);
                 RobotManager.InchingForwardReverse(robotShrinkLayer1b);
@@ -292,18 +294,4 @@ public class AlgorithmSimple : MonoBehaviour
     //    }
     //}
 
-    private void Reset()
-    {
-        robot_to_expand.Clear();
-        RobotSingulars_expand.Clear();
-        robot_to_shrink.Clear();
-        RobotSingulars_shrink.Clear();
-        robot_expand_count = 0;
-        robot_shrink_count = 0;
-        start = null;
-        end = null;
-        pathFound = false;
-        shrinkPathFound = false;
-        robot_shrink_total_number.Clear();
-    }
 }

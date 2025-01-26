@@ -198,10 +198,16 @@ public class RobotManager : MonoBehaviour
         }
 
         // find the robots
-        RobotSingular robot1 = FindRobotByPos(shrinkStartSide1);
-        RobotSingular robot2 = FindRobotByPos(shrinkEndSide1);
-        RobotSingular robot3 = FindRobotByPos(shrinkStartSide2);
-        RobotSingular robot4 = FindRobotByPos(shrinkEndSide2);
+        //RobotSingular robot1 = FindRobotByPos(shrinkStartSide1);
+        //RobotSingular robot2 = FindRobotByPos(shrinkEndSide1);
+        //RobotSingular robot3 = FindRobotByPos(shrinkStartSide2);
+        //RobotSingular robot4 = FindRobotByPos(shrinkEndSide2);
+        List<RobotSingular> robotShrink = FindRobotInlineInclude(shrinkStartSide1, shrinkEndSide1);
+        RobotSingular robot1 = robotShrink[0]; // first robot
+        RobotSingular robot2 = robotShrink[robotShrink.Count - 1];    //last robot
+        robotShrink = FindRobotInlineInclude(shrinkStartSide2, shrinkEndSide2);
+        RobotSingular robot3 = robotShrink[0]; // first robot
+        RobotSingular robot4 = robotShrink[robotShrink.Count - 1];    //last robot
 
         // add to the list
         robots.Add(robot1);

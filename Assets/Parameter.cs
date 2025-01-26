@@ -13,9 +13,9 @@ public class Parameter : ScriptableObject
     // Individual Robot Parameters
     public float growthRate = 1f; // how fast the robot expands, unit is wrt the time step
     public float shirnkRate = 1f; // how fast the robot shrinks, unit is wrt the time step
-    public float maxRadius = 1.275f; // the maximum radius of the robot
-    public float minRadius = 0.85f; // the minimum radius of the robot
-    public float adhesionStrength = 0.1f;  // the adhesion strength between the robots
+    public float maxRadius = 1.275f; // the maximum radius of the robot, 0.5 is the original, this is the multiplier
+    public float minRadius = 0.85f; // the minimum radius of the robot, 0.5 is the original, this is the multiplier
+    public float adhesionStrength = 0.2f;  // the adhesion strength between the robots
     public float maxAdhesionForce = 15f;  // the maximum adhesion force between the robots
     public float adhesionRangeMax = 1.5f;  // the maximum adhesion range between the robots, 1.5 * radius
 

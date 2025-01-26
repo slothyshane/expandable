@@ -16,10 +16,10 @@ MonoBehaviour:
   shirnkRate: 1
   maxRadius: 1.275
   minRadius: 0.85
-  adhesionStrength: 15
+  adhesionStrength: 0.2
   maxAdhesionForce: 20
   adhesionRangeMax: 1.5
-  rows: 4
+  rows: 5
   columns: 4
   rowsToShrink: 2
   delayIntervalParameterExpand: 2

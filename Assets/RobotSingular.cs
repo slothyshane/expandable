@@ -69,7 +69,7 @@ public class RobotSingular : MonoBehaviour
         colliderRadiusInit = circleCollider.radius;
         growthTimestepCount = 0.2f  / (growthRate * Time.fixedDeltaTime);
         shrinkTimestepCount = 0.2f / (shrinkRate * Time.fixedDeltaTime);
-        radiusDiff = maxRadius - minRadius;
+        radiusDiff = (maxRadius - minRadius) * colliderRadiusInit;
         Rigidbody2D = GetComponent<Rigidbody2D>();
     }
 
@@ -383,8 +383,8 @@ public class RobotSingular : MonoBehaviour
                 }
                 else
                     shapeSimilarityFactor = 1 - Mathf.Clamp((Mathf.Abs(colRadiusNorm - radiusNorm) * (1 / radiusDiff)), 0f, 0.9f);
-
-                forceMag = Mathf.Clamp(forceMag, 0, maxAdhesionForce);
+ 
+                //forceMag = Mathf.Clamp(forceMag, 0, maxAdhesionForce);
                 forceMag = forceMag * shapeSimilarityFactor;
                 Vector2 force = direction.normalized * forceMag;
                 //clear the forces 
@@ -395,9 +395,15 @@ public class RobotSingular : MonoBehaviour
 
                 // UPDATE the force
 
-                int totalForceInt = (int)totalForce.magnitude;
-                textComponent.text = totalForceInt.ToString();
-                
+                //int totalForceInt = (int)totalForce.magnitude;
+                //textComponent.text = totalForceInt.ToString();
+
+                // TESTING: get the name of the object
+                if (gameObject.name == "Robot12")
+                {
+                    Debug.Log("colliding with robot: " + collider.gameObject.name + " self-Radius:" + colliderWorldRadius + " force:" + force + " similarity:" + shapeSimilarityFactor + " dist:" + dist + " force_mag:" + forceMag + " colliderRadius:" + colColliderWorldRadius);
+                }
+
             }
         }
 
