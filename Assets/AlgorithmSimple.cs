@@ -117,6 +117,7 @@ public class AlgorithmSimple : MonoBehaviour
             if (Utils.CheckInline(startPos, endPos)) {
                 List<RobotSingular> robotExpand = RobotManager.FindRobotInlineInclude(start, end);
                 List<RobotSingular> robotShrink = RobotManager.FindParallelRobots(start, end, 1);
+                List<RobotSingular> robotShrink2 = RobotManager.FindParallelRobots(start, end, 2);
                 // every two robots 
                 RobotSingular robot1 = robotShrink[0];
                 RobotSingular robot2 = robotShrink[1];
@@ -129,6 +130,14 @@ public class AlgorithmSimple : MonoBehaviour
                 RobotManager.InchingForward(robotExpand);
                 RobotManager.InchingForwardReverse(robotShrinkLayer1a);
                 RobotManager.InchingForwardReverse(robotShrinkLayer1b);
+                robot1 = robotShrink2[0];
+                robot2 = robotShrink2[1];
+                robot3 = robotShrink2[2];
+                robot4 = robotShrink2[3];
+                List<RobotSingular> robotShrinkLayer2a = RobotManager.FindRobotInlineInclude(robot1, robot2);
+                List<RobotSingular> robotShrinkLayer2b = RobotManager.FindRobotInlineInclude(robot3, robot4);
+                RobotManager.InchingForwardReverse(robotShrinkLayer2a);
+                RobotManager.InchingForwardReverse(robotShrinkLayer2b);
             }
             else
             {

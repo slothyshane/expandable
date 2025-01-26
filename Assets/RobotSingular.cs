@@ -379,10 +379,10 @@ public class RobotSingular : MonoBehaviour
                 // the similarity score is calculated based on the difference in the radius
                 if (Mathf.Abs(colRadiusNorm - radiusNorm) > 0.9 * radiusDiff)
                 {
-                    shapeSimilarityFactor = 0.1f;
+                    shapeSimilarityFactor = 0.2f;
                 }
                 else
-                    shapeSimilarityFactor = 1 - Mathf.Clamp((Mathf.Abs(colRadiusNorm - radiusNorm) * (1 / radiusDiff)), 0f, 0.9f);
+                    shapeSimilarityFactor = 1 - Mathf.Clamp((Mathf.Abs(colRadiusNorm - radiusNorm) * (1 / radiusDiff)), 0f, 0.8f);
  
                 //forceMag = Mathf.Clamp(forceMag, 0, maxAdhesionForce);
                 forceMag = forceMag * shapeSimilarityFactor;
