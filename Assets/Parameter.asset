@@ -14,15 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   growthRate: 1
   shirnkRate: 1
-  maxRadius: 1.275
-  minRadius: 0.85
-  adhesionStrength: 0.3
-  maxAdhesionForce: 20
-  adhesionRangeMax: 1.5
-  rows: 8
-  columns: 8
-  rowsToShrink: 2
-  delayIntervalParameterExpand: 2
-  delayIntervalParameterShrink: 2
+  maxRadius: 1.37
+  minRadius: 0.87
+  adhesionStrength: 0.35
+  maxAdhesionForce: 25
+  adhesionRangeMax: 1.75
+  rows: 10
+  columns: 16
+  delayIntervalParameterExpand: 4
+  delayIntervalParameterShrink: 2.5
+  delayIntervalParameterShrinkIdleMultiplier: 4.5
+  delayIntervalParameterExpandIdleMultiplier: 0.3
   radiusCommunication: 2
-  robotsToBeRemoved: []
+  robotsToBeRemoved:
+  - 22
+  - 39
+  - 6
+  - 72

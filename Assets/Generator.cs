@@ -24,6 +24,7 @@ public class Generator : MonoBehaviour
     {
         radius = circlePrefab.GetComponent<CircleCollider2D>().radius;
         GenerateCircleGrid();
+        RemoveDefinedRobots();
     }
 
     void GenerateCircleGrid()
@@ -80,6 +81,16 @@ public class Generator : MonoBehaviour
         robots.Add(robotName, robot);
     }
 
+    public List<RobotSingular> GetAllRobots()
+    {
+        List<RobotSingular> robotList = new List<RobotSingular>();
+        foreach (GameObject robot in robots.Values)
+        {
+            robotList.Add(robot.GetComponent<RobotSingular>());
+        }
+        return robotList;
+    }
+
     public void RemoveRobot(string robotName)
     {
         if (robots.ContainsKey(robotName))
@@ -90,6 +101,15 @@ public class Generator : MonoBehaviour
         else
         {
             Debug.LogWarning("Robot with name " + robotName + " does not exist");
+        }
+    }
+
+    void RemoveDefinedRobots()
+    {
+        foreach (float robotNumber in parameters.robotsToBeRemoved)
+        {
+            string robotName = "Robot" + robotNumber;
+            RemoveRobot(robotName);
         }
     }
 }

@@ -5,35 +5,23 @@ using Unity.Burst.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 
+public enum Motion { idle, simpleMotion };
+
 public class AlgorithmSimple : MonoBehaviour
 {
     [SerializeField]
     private Parameter parmeters;
     public RobotManager RobotManager;
     Camera camera;
-    List<GameObject> robot_to_expand = new List<GameObject>();
-    Stack<RobotSingular> RobotSingulars_expand = new Stack<RobotSingular>();
 
-    List<GameObject> robot_to_shrink = new List<GameObject>();
-    Stack<RobotSingular> RobotSingulars_shrink = new Stack<RobotSingular>();
-
-    private int robot_expand_count = 0;
-    private int robot_shrink_count = 0;
-
-
-    private int rows_to_shrink;
     private bool pathFound = false;
-    private bool shrinkPathFound = false;
-    private float radius_robot;
-    private Stack<int> robot_shrink_total_number = new Stack<int>();
-
+    private Queue<Execution> exeQueue = new Queue<Execution>();
+    private Motion currMotion = Motion.idle;
     RobotSingular start;
     RobotSingular end;
 
-
-    private void Awake()
+private void Awake()
     {
-        rows_to_shrink = parmeters.rowsToShrink;
         camera = Camera.main;
     }
     void Start()
@@ -43,44 +31,16 @@ public class AlgorithmSimple : MonoBehaviour
 
     void FixedUpdate()  
     {
-        ////robot_script_test.debug();
-        //if (pathFound == true && RobotSingulars_expand.Count == 0 && RobotSingulars_shrink.Count == 0)
-        //{
-        //    Reset();
-        //}
-        //if (RobotSingulars_expand.Count != 0)
-        //{
-        //    RobotSingular robot_expand = RobotSingulars_expand.Pop();
-            
-        //    robot_expand.AddState(State.expand, delay_interval_parameter_expand * robot_expand_count);
-        //    robot_expand.AddState(State.idle, delay_interval_parameter_expand);
-        //    robot_expand.AddState(State.shrinkToOriginal);
-            
-        //    robot_expand_count++;
-        //}
-        //else { robot_expand_count = 0; }
-
-        //if (RobotSingulars_shrink.Count != 0)
-        //{
- 
-        //    int number = robot_shrink_total_number.Peek();
-        //    RobotSingular robot_shrink = RobotSingulars_shrink.Pop();
-        //    robot_shrink.AddState(State.shrink, delay_interval_parameter_shrink * robot_shrink_count);
-        //    robot_shrink.AddState(State.idle, 2.9f * delay_interval_parameter_shrink);
-        //    robot_shrink.AddState(State.expandToOriginal);
-        //    robot_shrink_count++;
-
-        //    if (robot_shrink_count >= number)
-        //    {
-        //        robot_shrink_count = 0;
-        //        robot_shrink_total_number.Pop();
-        //    }
-         
-        //}
-        //else { robot_shrink_count = 0; }
-
-
-
+        if (exeQueue.Count > 0) { 
+            if (RobotManager.MotionCheckAll() == false) {
+                Debug.Log("motion stopped");
+                Execution currExe = exeQueue.Dequeue();
+                if (currExe.nextMotion == Motion.simpleMotion)
+                {
+                    simpleMotion(currExe.start, currExe.end);
+                }
+            }
+        }
     }
 
     private void Update()
@@ -92,6 +52,8 @@ public class AlgorithmSimple : MonoBehaviour
         else 
         {
             start.ChangeColor("red");
+            //Debug.Log("start: " + start.name);
+            //Debug.Log("start pos: " + start.transform.position);
         }
 
         if (end == null)
@@ -101,12 +63,13 @@ public class AlgorithmSimple : MonoBehaviour
         else
         {
             end.ChangeColor("green");
+            //Debug.Log("end: " + end.name);
+            //Debug.Log("end pos: " + end.transform.position);
         }
 
         // both robots have been clicked. this is where the algorithm starts
         if (start != null && end != null && pathFound == false) 
         {
-            Debug.Log("executing once");
             Transform startTransform = start.transform;
             Transform endTransform = end.transform;
 
@@ -115,192 +78,88 @@ public class AlgorithmSimple : MonoBehaviour
             Vector2 endPos = endTransform.position;
 
             if (Utils.CheckInline(startPos, endPos)) {
-                List<RobotSingular> robotExpand = RobotManager.FindRobotInlineInclude(start, end);
-                List<RobotSingular> robotShrink = RobotManager.FindParallelRobots(start, end, 1);
-                List<RobotSingular> robotShrink2 = RobotManager.FindParallelRobots(start, end, 2);
-                // every two robots 
-                RobotSingular robot1 = robotShrink[0];
-                RobotSingular robot2 = robotShrink[1];
-                RobotSingular robot3 = robotShrink[2];
-                RobotSingular robot4 = robotShrink[3];
-
-                List<RobotSingular> robotShrinkLayer1a = RobotManager.FindRobotInlineInclude(robot1, robot2);
-                List<RobotSingular> robotShrinkLayer1b = RobotManager.FindRobotInlineInclude(robot3, robot4);
-
-                RobotManager.InchingForward(robotExpand);
-                RobotManager.InchingForwardReverse(robotShrinkLayer1a);
-                RobotManager.InchingForwardReverse(robotShrinkLayer1b);
-                robot1 = robotShrink2[0];
-                robot2 = robotShrink2[1];
-                robot3 = robotShrink2[2];
-                robot4 = robotShrink2[3];
-                List<RobotSingular> robotShrinkLayer2a = RobotManager.FindRobotInlineInclude(robot1, robot2);
-                List<RobotSingular> robotShrinkLayer2b = RobotManager.FindRobotInlineInclude(robot3, robot4);
-                RobotManager.InchingForwardReverse(robotShrinkLayer2a);
-                RobotManager.InchingForwardReverse(robotShrinkLayer2b);
+  
+                exeQueue.Enqueue(new Execution(Motion.simpleMotion, start, end));
+                //motionQueue.Enqueue(Motion.simpleMotion);
             }
             else
             {
-                //List<Vector3> disjunct_motion = get_inline_transform(startTransform.position, endTransform.position);
+                Vector2 middle = RobotManager.GetInlineDecompose(startPos, endPos);
+                Debug.Log("middle: " + middle);
+                RobotSingular middleRobot = RobotManager.FindRobotByPos(middle);
+                Debug.Log("middle robot: " + middleRobot.name);
 
-                //for (int i = 0; i < disjunct_motion.Count; i += 2)
-                //    {
-                //        Vector3 startPos_new = disjunct_motion[i];
-                //        Vector3 endPos_new = disjunct_motion[i + 1];
-                //        inlineMotionGenerate(startPos_new, endPos_new);
-                //    }
+                List<RobotSingular> inBetweenStart = RobotManager.FindRobotInlineExclude(start, middleRobot);
+                int inBetweenStartCount = inBetweenStart.Count;
+                List<RobotSingular> inBetweenEnd = RobotManager.FindRobotInlineExclude(middleRobot, end);
+                int inBetweenEndCount = inBetweenEnd.Count;
+                Debug.Log("inBetweenStartCount: " + inBetweenStartCount + " inBetweenEndCount: " + inBetweenEndCount);
+                RobotSingular startRobot = RobotManager.FindRobotByNumber(145);
+                RobotSingular endRobot = RobotManager.FindRobotByNumber(160);
+                //exeQueue.Enqueue(new Execution(Motion.simpleMotion, startRobot, endRobot));
+                //exeQueue.Enqueue(new Execution(Motion.simpleMotion, startRobot, endRobot));
+                startRobot = RobotManager.FindRobotByNumber(55);
+                endRobot = RobotManager.FindRobotByNumber(154);
+                exeQueue.Enqueue(new Execution(Motion.simpleMotion, startRobot, endRobot));
+                exeQueue.Enqueue(new Execution(Motion.simpleMotion, startRobot, endRobot));
+                exeQueue.Enqueue(new Execution(Motion.simpleMotion, startRobot, endRobot));
+
+
             }
             pathFound = true;
         }
     }
 
-    // return a list of transform
-    private List<Vector3> get_inline_transform(Vector3 startPos, Vector3 endPos) // the order is start, end
-    {
-        List<Vector3> transforms = new List<Vector3>();
-        Vector3 start_pos_first = startPos;
-        Vector3 start_pos_second = startPos;
-        Vector3 end_pos_first = endPos;
-        Vector3 end_pos_second = endPos;
-        //create a copy of startTransform
-        
-        if (start_pos_first.x < end_pos_second.x) 
+    public void simpleMotion(RobotSingular start, RobotSingular end) {
+        RobotSingular robot1;
+        RobotSingular robot2;
+        RobotSingular robot3;
+        RobotSingular robot4;
+        List<RobotSingular> robotExpand = RobotManager.FindRobotInlineInclude(start, end);
+        RobotManager.InchingForward(robotExpand);
+
+        List<RobotSingular> robotShrink = RobotManager.FindParallelRobots(start, end, 1);
+        List<RobotSingular> robotShrink2 = RobotManager.FindParallelRobots(start, end, 2);
+        // every two robots 
+        if (robotShrink.Count == 4)
         {
-            // move x by a robot radius
-            while (Utils.CheckInline(start_pos_second, end_pos_second) == false)
-            {
-                start_pos_second.x += radius_robot * 2;
-            }
-            end_pos_first = start_pos_second;
+            robot1 = robotShrink[0];
+            robot2 = robotShrink[1];
+            robot3 = robotShrink[2];
+            robot4 = robotShrink[3];
 
-
+            List<RobotSingular> robotShrinkLayer1a = RobotManager.FindRobotInlineInclude(robot1, robot2);
+            List<RobotSingular> robotShrinkLayer1b = RobotManager.FindRobotInlineInclude(robot3, robot4);
+            RobotManager.InchingForwardReverse(robotShrinkLayer1a);
+            RobotManager.InchingForwardReverse(robotShrinkLayer1b);
         }
 
-        transforms.Add(start_pos_first);
-        transforms.Add(end_pos_first);
-        transforms.Add(start_pos_second);
-        transforms.Add(end_pos_second);
 
-        return transforms;
+        if (robotShrink2.Count == 4)
+        {
+            robot1 = robotShrink2[0];
+            robot2 = robotShrink2[1];
+            robot3 = robotShrink2[2];
+            robot4 = robotShrink2[3];
+            List<RobotSingular> robotShrinkLayer2a = RobotManager.FindRobotInlineInclude(robot1, robot2);
+            List<RobotSingular> robotShrinkLayer2b = RobotManager.FindRobotInlineInclude(robot3, robot4);
+            RobotManager.InchingForwardReverse(robotShrinkLayer2a);
+            RobotManager.InchingForwardReverse(robotShrinkLayer2b);
+        }
     }
+}
 
 
-    //private void inlineMotionGenerate(Vector3 startPos, Vector3 endPos)
+public struct Execution
+{
+    public Motion nextMotion;
+    public RobotSingular start;
+    public RobotSingular end;
 
-    //{
-       
-    //    RaycastHit2D[] hits = Physics2D.LinecastAll(startPos, endPos);
-    //    RaycastHit2D[] hits_additional = Physics2D.LinecastAll(direction_to_move_opposite + startPos, endPos);
-
-    //    int number_of_robots = hits.Length;
-    //    Debug.Log("number of robots: " + number_of_robots);
-    //    bool first_added = false;
-
-    //    if (hits_additional.Length > 0)
-    //    {
-    //        pathFound = true;
-    //        foreach (RaycastHit2D hit in hits_additional)
-    //        {
-    //            if (hit.collider != null)
-    //            {
-    //                robot_to_expand.Add(hit.collider.gameObject);
-    //                SpriteRenderer spriteRenderer = hit.collider.gameObject.GetComponent<SpriteRenderer>();
-    //                if (spriteRenderer != null && first_added == true)
-    //                {
-    //                    spriteRenderer.color = Color.gray;
-    //                }
-    //                else if (spriteRenderer != null && first_added == false)
-    //                {
-    //                    spriteRenderer.color = Color.blue;
-    //                    first_added = true;
-    //                }
-
-    //                RobotSingulars_expand.Push(hit.collider.gameObject.GetComponent<RobotSingular>());
-    //            }
-    //        }
-    //    }
-
-    //    // duplicate the RobotSingulars_expand and add to itself
-    //    var RobotSingulars_expand_array = RobotSingulars_expand.ToArray();
-    //    // reverse the array
-    //    System.Array.Reverse(RobotSingulars_expand_array);
-    //    for (int i = 0; i < number_of_robots - 1; i++)
-    //    {
-    //        foreach (RobotSingular robot in RobotSingulars_expand_array)
-    //        {
-    //            RobotSingulars_expand.Push(robot);
-    //        }
-    //    }
-
-    //    // find all the robots on the path, this is the shrinking list
-    //    Vector2 shrink_start_1, shrink_end_1, shrink_start_2, shrink_end_2;
-    //    if (rows_to_shrink != 0 && start != null && end != null && shrinkPathFound == false)
-    //    {
-    //        shrinkPathFound = true;
-    //        for (int i = 1; i < rows_to_shrink + 1; i++)
-    //        {
-    //            // check the transform to decide which way to move
-               
-    //            RaycastHit2D[] hits1 = Physics2D.LinecastAll(shrink_start_1, shrink_end_1);
-    //            if (hits1.Length > 0)
-    //            {
-    //                foreach (RaycastHit2D hit in hits1)
-    //                {
-    //                    if (hit.collider != null)
-    //                    {
-    //                        robot_to_shrink.Add(hit.collider.gameObject);
-    //                        //change the color
-    //                        SpriteRenderer spriteRenderer = hit.collider.gameObject.GetComponent<SpriteRenderer>();
-    //                        if (spriteRenderer != null)
-    //                        {
-    //                            spriteRenderer.color = Color.blue;
-    //                        }
-    //                        RobotSingulars_shrink.Push(hit.collider.gameObject.GetComponent<RobotSingular>());
-    //                    }
-    //                }
-    //                robot_shrink_total_number.Push(hits1.Length);
-    //            }
-
-
-    //            RaycastHit2D[] hits2 = Physics2D.LinecastAll(shrink_start_2, shrink_end_2);
-    //            if (hits2.Length > 0)
-    //            {
-    //                foreach (RaycastHit2D hit in hits2)
-    //                {
-    //                    if (hit.collider != null)
-    //                    {
-    //                        robot_to_shrink.Add(hit.collider.gameObject);
-    //                        SpriteRenderer spriteRenderer = hit.collider.gameObject.GetComponent<SpriteRenderer>();
-    //                        if (spriteRenderer != null)
-    //                        {
-    //                            spriteRenderer.color = Color.blue;
-    //                        }
-    //                        RobotSingulars_shrink.Push(hit.collider.gameObject.GetComponent<RobotSingular>());
-    //                    }
-    //                }
-    //                robot_shrink_total_number.Push(hits2.Length);
-    //            }
-    //        }
-    //        var RobotSingulars_shrink_array = RobotSingulars_shrink.ToArray();
-    //        var total_number = robot_shrink_total_number.ToArray();
-    //        // reverse the array
-    //        System.Array.Reverse(RobotSingulars_shrink_array);
-    //        System.Array.Reverse(total_number);
-    //        for (int j = 0; j < number_of_robots - 1; j++)
-    //        {
-    //            foreach (RobotSingular robot in RobotSingulars_shrink_array)
-    //            {
-    //                RobotSingulars_shrink.Push(robot);
-    //            }
-
-    //            foreach (int number in total_number)
-    //            {
-    //                robot_shrink_total_number.Push(number);
-    //            }
-
-    //        }
-
-    //    }
-    //}
-
+    public Execution(Motion motion, RobotSingular start = null, RobotSingular end = null)
+    {
+        nextMotion = motion;
+        this.start = start;
+        this.end = end;
+    }
 }

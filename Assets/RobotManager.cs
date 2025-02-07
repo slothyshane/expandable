@@ -10,6 +10,7 @@ public class RobotManager : MonoBehaviour
     public Parameter parameters;
     public Generator generator;
     Camera camera;
+    float radiusCommunication;
     void Start()
     {
         QualitySettings.vSyncCount = 0;  // VSync must be disabled
@@ -27,15 +28,16 @@ public class RobotManager : MonoBehaviour
         ////{
         ////    Debug.Log(neighbor.name);
         ////}
+        
 
     }
 
 
-    public List<RobotSingular> GetNeigthbors(RobotSingular robot)
+    public List<RobotSingular> GetNeigthbors(RobotSingular robot, float communicationRadius = 2 )
     {
         List<RobotSingular> robotsList = new List<RobotSingular>();
         float radius = robot.GetComponent<CircleCollider2D>().radius;
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(robot.transform.position, parameters.radiusCommunication * radius);
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(robot.transform.position, communicationRadius * radius);
         for (int i = 0; i < colliders.Length; i++)
         {
             if (colliders[i].gameObject != robot.gameObject)
@@ -91,6 +93,13 @@ public class RobotManager : MonoBehaviour
         }
         return robots;
     }
+
+    //public List<RobotSingular> FindAllRobotsInline(Vector2 start, Vector2 end)
+    //{
+    //    List<RobotSingular> robots = new List<RobotSingular>();
+
+    
+    //}
 
     public List<RobotSingular> FindRobotInlineExclude(Vector2 start, Vector2 end)
     {
@@ -176,10 +185,10 @@ public class RobotManager : MonoBehaviour
             {
                 offset = -radiusRobot * layer;
             }
-            shrinkStartSide1 = new Vector2(startPos.x - offset, startPos.y + radiusRobot * 2 * layer);
-            shrinkEndSide1 = new Vector2(endPos.x + offset, endPos.y + radiusRobot * 2 * layer);
-            shrinkStartSide2 = new Vector2(startPos.x - offset, startPos.y - radiusRobot * 2 * layer);
-            shrinkEndSide2 = new Vector2(endPos.x + offset, endPos.y - radiusRobot * 2 * layer);
+            shrinkStartSide1 = new Vector2(startPos.x - offset / 2 , startPos.y + radiusRobot * 2 * layer);
+            shrinkEndSide1 = new Vector2(endPos.x + offset /2 , endPos.y + radiusRobot * 2 * layer);
+            shrinkStartSide2 = new Vector2(startPos.x - offset/2, startPos.y - radiusRobot * 2 * layer);
+            shrinkEndSide2 = new Vector2(endPos.x + offset/2, endPos.y - radiusRobot * 2 * layer);
         }
         else
         {
@@ -191,21 +200,29 @@ public class RobotManager : MonoBehaviour
             {
                 offset = -radiusRobot * layer;
             }
-            shrinkStartSide1 = new Vector2(startPos.x + radiusRobot * 2 * layer, startPos.y - offset);
-            shrinkEndSide1 = new Vector2(endPos.x + radiusRobot * 2 * layer, endPos.y + offset);
-            shrinkStartSide2 = new Vector2(startPos.x - radiusRobot * 2 * layer, startPos.y - offset);
-            shrinkEndSide2 = new Vector2(endPos.x - radiusRobot * 2 * layer, endPos.y + offset);
+            shrinkStartSide1 = new Vector2(startPos.x + radiusRobot * 2 * layer, startPos.y - offset / 2);
+            shrinkEndSide1 = new Vector2(endPos.x + radiusRobot * 2 * layer, endPos.y + offset / 2);
+            shrinkStartSide2 = new Vector2(startPos.x - radiusRobot * 2 * layer, startPos.y - offset / 2 );
+            shrinkEndSide2 = new Vector2(endPos.x - radiusRobot * 2 * layer, endPos.y + offset / 2 );
         }
 
         // find the robots
-        //RobotSingular robot1 = FindRobotByPos(shrinkStartSide1);
-        //RobotSingular robot2 = FindRobotByPos(shrinkEndSide1);
-        //RobotSingular robot3 = FindRobotByPos(shrinkStartSide2);
-        //RobotSingular robot4 = FindRobotByPos(shrinkEndSide2);
+
         List<RobotSingular> robotShrink = FindRobotInlineInclude(shrinkStartSide1, shrinkEndSide1);
+        if (robotShrink.Count < 2)
+        {
+            return robots;
+        }
+
+
         RobotSingular robot1 = robotShrink[0]; // first robot
         RobotSingular robot2 = robotShrink[robotShrink.Count - 1];    //last robot
+
         robotShrink = FindRobotInlineInclude(shrinkStartSide2, shrinkEndSide2);
+        if (robotShrink.Count < 2)
+        {
+            return robots;
+        }
         RobotSingular robot3 = robotShrink[0]; // first robot
         RobotSingular robot4 = robotShrink[robotShrink.Count - 1];    //last robot
 
@@ -289,7 +306,7 @@ public class RobotManager : MonoBehaviour
         foreach (RobotSingular robot in robots)
         {
             SendCommand(robot, State.expand, robotCounter * parameters.delayIntervalParameterExpand);
-            SendCommand(robot, State.idle, parameters.delayIntervalParameterExpand);
+            SendCommand(robot, State.idle, parameters.delayIntervalParameterExpand * parameters.delayIntervalParameterExpandIdleMultiplier);
             SendCommand(robot, State.shrinkToOriginal, 0f);
             robotCounter++;
         }
@@ -302,7 +319,7 @@ public class RobotManager : MonoBehaviour
         foreach (RobotSingular robot in robots)
         {
             SendCommand(robot, State.shrink, robotCounter * parameters.delayIntervalParameterShrink);
-            SendCommand(robot, State.idle, parameters.delayIntervalParameterShrink);
+            SendCommand(robot, State.idle, parameters.delayIntervalParameterShrink * parameters.delayIntervalParameterShrinkIdleMultiplier);
             SendCommand(robot, State.expandToOriginal, 0f);
             robotCounter++;
         }
@@ -354,5 +371,51 @@ public class RobotManager : MonoBehaviour
             return robot;
         }
         return null;
+    }
+
+    public Vector2 GetInlineDecompose(Vector2 startPos, Vector2 endPos) // the order is start, end
+    {
+        Vector2 inline = Vector2.zero;
+        // get the robots at both positions
+        RobotSingular robotStart = FindRobotByPos(startPos);
+        RobotSingular robotEnd = FindRobotByPos(endPos);
+
+        // get all the neights of start
+        List<RobotSingular> startRobotNeighbors = GetNeigthbors(robotStart);
+        List<RobotSingular> endRobotNeighbors = GetNeigthbors(robotEnd);
+
+        Vector2 robotIntersection = Utils.GetRobotIntersection(startRobotNeighbors, endRobotNeighbors, startPos, endPos);
+
+        inline = robotIntersection;
+        
+        return inline;
+    }
+    public RobotSingular FindRobotByNumber(int number)
+    {
+        string robotName = "Robot" + number;
+        RobotSingular robot = generator.GetRobot(robotName);
+        if (robot == null)
+        {
+            Debug.Log(robotName + " not found");
+            return null;
+        }
+        return robot;
+    }
+
+    public bool MotionCheck(List<RobotSingular> robots)
+    {
+        foreach(RobotSingular robot in robots)
+        {
+            if (robot.CheckInMotion())
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public bool MotionCheckAll() { 
+        List<RobotSingular> robots = generator.GetAllRobots();
+        return MotionCheck(robots);                 
     }
 }

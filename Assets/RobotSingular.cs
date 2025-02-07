@@ -120,7 +120,7 @@ public class RobotSingular : MonoBehaviour
         else if (state == State.wait)
         {
             stateChangeTimer += Time.deltaTime;
-            Debug.Log("stateChangeTimer: " + stateChangeTimer);
+            //Debug.Log("stateChangeTimer: "s + stateChangeTimer);
             if (stateChangeTimer >= stateWaitTime)
             {
                 state = stateToBeChanged;
@@ -316,7 +316,7 @@ public class RobotSingular : MonoBehaviour
         }
     }
 
-    private bool CheckMotion()
+    public bool CheckInMotion()
     {
         // Current values
         Vector3 currentPosition = transform.position;
@@ -331,7 +331,7 @@ public class RobotSingular : MonoBehaviour
         prevPos = currentPosition;
         prevScale = currentScale;
 
-        if (posDiff < stopThreshold && scaleDiff < stopThreshold)
+        if (posDiff < stopThreshold && scaleDiff < stopThreshold && stateQueue.Count == 0)
         {
             return false;
         }
@@ -379,10 +379,10 @@ public class RobotSingular : MonoBehaviour
                 // the similarity score is calculated based on the difference in the radius
                 if (Mathf.Abs(colRadiusNorm - radiusNorm) > 0.9 * radiusDiff)
                 {
-                    shapeSimilarityFactor = 0.2f;
+                    shapeSimilarityFactor = 0.3f;
                 }
                 else
-                    shapeSimilarityFactor = 1 - Mathf.Clamp((Mathf.Abs(colRadiusNorm - radiusNorm) * (1 / radiusDiff)), 0f, 0.8f);
+                    shapeSimilarityFactor = 1 - Mathf.Clamp((Mathf.Abs(colRadiusNorm - radiusNorm) * (1 / radiusDiff)), 0f, 0.3f);
  
                 //forceMag = Mathf.Clamp(forceMag, 0, maxAdhesionForce);
                 forceMag = forceMag * shapeSimilarityFactor;
@@ -399,10 +399,10 @@ public class RobotSingular : MonoBehaviour
                 //textComponent.text = totalForceInt.ToString();
 
                 // TESTING: get the name of the object
-                if (gameObject.name == "Robot12")
-                {
-                    Debug.Log("colliding with robot: " + collider.gameObject.name + " self-Radius:" + colliderWorldRadius + " force:" + force + " similarity:" + shapeSimilarityFactor + " dist:" + dist + " force_mag:" + forceMag + " colliderRadius:" + colColliderWorldRadius);
-                }
+                //if (gameObject.name == "Robot12")
+                //{
+                //    Debug.Log("colliding with robot: " + collider.gameObject.name + " self-Radius:" + colliderWorldRadius + " force:" + force + " similarity:" + shapeSimilarityFactor + " dist:" + dist + " force_mag:" + forceMag + " colliderRadius:" + colColliderWorldRadius);
+                //}
 
             }
         }

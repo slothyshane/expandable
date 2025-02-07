@@ -105,7 +105,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 0.1
+  m_Mass: 0.2
   m_LinearDrag: 0
   m_AngularDrag: 0
   m_GravityScale: 0
@@ -168,8 +168,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parameters: {fileID: 11400000, guid: 239e14a2f294b1748a98356df102d2e4, type: 2}
-  growth_timestep_count: 0
-  shrink_timestep_count: 0
+  growthTimestepCount: 0
+  shrinkTimestepCount: 0
   adhesionLayer:
     serializedVersion: 2
     m_Bits: 64
