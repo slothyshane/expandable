@@ -2,10 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
+using System.Security.Cryptography;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Android;
 public enum State { idle, expand, shrink, expandToOriginal, shrinkToOriginal, wait };
+
 
 public class RobotSingular : MonoBehaviour
 {
@@ -47,6 +49,10 @@ public class RobotSingular : MonoBehaviour
     private Queue<RobotState> stateQueue = new Queue<RobotState>();
     public TextMeshPro textComponent;
     private Vector2 totalForce = Vector2.zero;
+    private int robotNum;
+
+
+    private bool activateDisplay = false;
 
 
     void Awake()
@@ -71,6 +77,7 @@ public class RobotSingular : MonoBehaviour
         shrinkTimestepCount = 0.2f / (shrinkRate * Time.fixedDeltaTime);
         radiusDiff = (maxRadius - minRadius) * colliderRadiusInit;
         Rigidbody2D = GetComponent<Rigidbody2D>();
+        robotNum = Int32.Parse(gameObject.name.Substring(5));
     }
 
     // Update is called once per frame
@@ -109,6 +116,41 @@ public class RobotSingular : MonoBehaviour
                     state = State.wait;
                     stateToBeChanged = next_state.nextState;
                     stateWaitTime = next_state.delay;
+                    
+                    if (next_state.maxRadiusCommand != 0)
+                    {
+                        maxRadius = next_state.maxRadiusCommand;
+                    }
+                    else
+                    {
+                        maxRadius = parameters.maxRadius;
+                    }
+                    if (next_state.minRadiusCommand != 0)
+                    {
+                        minRadius = next_state.minRadiusCommand;
+                    }
+                    else
+                    {
+                        minRadius = parameters.minRadius;
+                    }
+                    if (next_state.growthRateCommand != 0)
+                    {
+                        growthRate = next_state.growthRateCommand;
+                    }
+                    else
+                    {
+                        growthRate = parameters.growthRate;
+                    }
+
+                    if (next_state.shrinkRateCommand != 0)
+                    {
+                        shrinkRate = next_state.shrinkRateCommand;
+                    }
+                    else
+                    {
+                        shrinkRate = parameters.shirnkRate;
+                    }
+
                     stateChangeTimer = 0f;
                 }
                 else
@@ -131,7 +173,7 @@ public class RobotSingular : MonoBehaviour
         {
 
            ResetColor();
-            
+           textComponent.text = robotNum.ToString();
         }
 
     }
@@ -207,12 +249,12 @@ public class RobotSingular : MonoBehaviour
         return Rigidbody2D.velocity.magnitude;
     }
 
-    public void ChangeColor(string color)
+    public void ChangeColor(string color, float shade = 1f)
     {
         // find the color
         if (color != null)
-        { 
-            Color newColor = color.ToLower() switch
+        {
+            Color baseColor = color.ToLower() switch
             {
                 "red" => Color.red,
                 "blue" => Color.blue,
@@ -222,9 +264,11 @@ public class RobotSingular : MonoBehaviour
                 "white" => Color.white,
                 _ => Color.white
             };
+
+            // Adjust the shade
+            Color newColor = baseColor * shade;
             spriteRenderer.color = newColor;
-        }    
-            
+        }
     }
     public void ResetColor()
     {
@@ -366,9 +410,14 @@ public class RobotSingular : MonoBehaviour
                 float dist = direction.magnitude - colliderWorldRadius - colColliderWorldRadius;
 
                 //clip the distance to min 0.01
+ 
                 dist = Mathf.Clamp(dist, 0.01f, dist);
                 if (dist > adhesionRangeMax * colliderWorldRadius) // skip if the distance is greater than the adhesion range
                 {
+                    if (gameObject.name == "Robot25")
+                    {
+                        Debug.Log("skipping");
+                    }
                     continue;
                 }
 
@@ -379,10 +428,10 @@ public class RobotSingular : MonoBehaviour
                 // the similarity score is calculated based on the difference in the radius
                 if (Mathf.Abs(colRadiusNorm - radiusNorm) > 0.9 * radiusDiff)
                 {
-                    shapeSimilarityFactor = 0.3f;
+                    shapeSimilarityFactor = 0.2f;
                 }
                 else
-                    shapeSimilarityFactor = 1 - Mathf.Clamp((Mathf.Abs(colRadiusNorm - radiusNorm) * (1 / radiusDiff)), 0f, 0.3f);
+                    shapeSimilarityFactor = 1 - Mathf.Clamp((Mathf.Abs(colRadiusNorm - radiusNorm) * (1 / radiusDiff)), 0.0f, 0.8f);
  
                 //forceMag = Mathf.Clamp(forceMag, 0, maxAdhesionForce);
                 forceMag = forceMag * shapeSimilarityFactor;
@@ -399,7 +448,7 @@ public class RobotSingular : MonoBehaviour
                 //textComponent.text = totalForceInt.ToString();
 
                 // TESTING: get the name of the object
-                //if (gameObject.name == "Robot12")
+                //if (gameObject.name == "Robot25")
                 //{
                 //    Debug.Log("colliding with robot: " + collider.gameObject.name + " self-Radius:" + colliderWorldRadius + " force:" + force + " similarity:" + shapeSimilarityFactor + " dist:" + dist + " force_mag:" + forceMag + " colliderRadius:" + colColliderWorldRadius);
                 //}
@@ -426,10 +475,18 @@ public class RobotSingular : MonoBehaviour
 public struct RobotState {
     public State nextState;
     public float delay;
+    public float maxRadiusCommand;
+    public float minRadiusCommand;
+    public float growthRateCommand;
+    public float shrinkRateCommand;
 
-    public RobotState(State state, float delay = 0f)
+    public RobotState(State state, float delay = 0f, float maxRadius = 0, float minRadius = 0, float growthRate = 0, float shrinkRate = 0)
     {
         nextState = state;
         this.delay = delay;
+        maxRadiusCommand = maxRadius;
+        minRadiusCommand = minRadius;
+        growthRateCommand = growthRate;
+        shrinkRateCommand = shrinkRate;
     }
 }

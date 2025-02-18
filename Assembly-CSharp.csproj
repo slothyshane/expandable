@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\RobotManager.cs" />
+    <Compile Include="Assets\AlgorithmPlayGround.cs" />
     <Compile Include="Assets\Generator.cs" />
     <Compile Include="Assets\utils.cs" />
     <Compile Include="Assets\Parameter.cs" />

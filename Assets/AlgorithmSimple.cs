@@ -96,7 +96,7 @@ private void Awake()
                 Debug.Log("inBetweenStartCount: " + inBetweenStartCount + " inBetweenEndCount: " + inBetweenEndCount);
                 RobotSingular startRobot = RobotManager.FindRobotByNumber(145);
                 RobotSingular endRobot = RobotManager.FindRobotByNumber(160);
-                //exeQueue.Enqueue(new Execution(Motion.simpleMotion, startRobot, endRobot));
+                //exeQueue.Enqueue(new Execution(Motion.simpleMotion, startRobot,  endRobot));
                 //exeQueue.Enqueue(new Execution(Motion.simpleMotion, startRobot, endRobot));
                 startRobot = RobotManager.FindRobotByNumber(55);
                 endRobot = RobotManager.FindRobotByNumber(154);
@@ -116,7 +116,7 @@ private void Awake()
         RobotSingular robot3;
         RobotSingular robot4;
         List<RobotSingular> robotExpand = RobotManager.FindRobotInlineInclude(start, end);
-        RobotManager.InchingForward(robotExpand);
+        RobotManager.InchingForwardLastOneStill(robotExpand);
 
         List<RobotSingular> robotShrink = RobotManager.FindParallelRobots(start, end, 1);
         List<RobotSingular> robotShrink2 = RobotManager.FindParallelRobots(start, end, 2);

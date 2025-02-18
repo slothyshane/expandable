@@ -312,6 +312,22 @@ public class RobotManager : MonoBehaviour
         }
     }
 
+    public void InchingForwardLastOneStill(List<RobotSingular> robots)
+    {
+        int robotCount = robots.Count;
+        int robotCounter = 0;
+        foreach (RobotSingular robot in robots)
+        {
+            if ( robotCounter != robots.Count - 1)
+            {
+                SendCommand(robot, State.expand, robotCounter * parameters.delayIntervalParameterExpand);
+                SendCommand(robot, State.idle, parameters.delayIntervalParameterExpand * parameters.delayIntervalParameterExpandIdleMultiplier);
+                SendCommand(robot, State.shrinkToOriginal, 0f);
+            }
+            robotCounter++;
+        }
+    }
+
     public void InchingForwardReverse(List<RobotSingular> robots)
     {
         int robotCount = robots.Count;
