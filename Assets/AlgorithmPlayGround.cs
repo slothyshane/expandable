@@ -5,58 +5,99 @@ using TMPro;
 using Unity.Burst.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 /// <summary>
 /// PlayGround
 /// Press E to enable expansion mode
 /// Press C to enable contraction mode
 /// Use number 1 - 6 to indicate the simultaneous expansion and contraction of the robots
-/// Left click to select the robot to expand 
-/// Right click to select the robot to contract
+/// Left click to select the robot 
 /// Once selected, press enter to start the algorithm
 /// </summary>
+//public enum UIState { Prep, expand, shrink};
 
 public class AlgorithmPlayGround : MonoBehaviour
 {
     [SerializeField]
     private Parameter parmeters;
     public RobotManager RobotManager;
-    public TextMeshProUGUI textComponent;
+    public TextMeshProUGUI textComponentLeft;
+    public TextMeshProUGUI textComponentRight;
+    public ProgressManager ProgressManager;
+    public Button saveSceneButton;
+    public Button loadSceneButton;
+    public Button saveConfigButton;
+    public Button loadConfigButton;
     Camera camera;
 
     private bool pathFound = false;
-    RobotSingular expandRobot;
-    RobotSingular shrinkRobot;
+    RobotSingular selectRobot;
+    Vector3 mousePos = Vector3.zero;
     private List<List<RobotSingular>> robotToExpand;
     private List<List<RobotSingular>> robotToShrink;
-    private string mode = "Idle";
+    private string mode = "Prep";
     private int keyboardNum = 1;
     private bool begin = false;
     private bool motion = false;
 
-    //display the text on the screen
+    private bool saveConfig = false;
+    private bool loadConfig = false;
+
 
 
     private void Awake()
     {
         camera = Camera.main;
+
     }
     void Start()
     {
-        robotToExpand = new List<List<RobotSingular>>();
-        robotToShrink = new List<List<RobotSingular>>();
+        Reset();
+        saveConfigButton.onClick.AddListener(OnSaveConfigButtonClick);
+        loadConfigButton.onClick.AddListener(OnLoadConfigButtonClick);
+        saveSceneButton.onClick.AddListener(OnSaveSceneButtonClick);
+        loadSceneButton.onClick.AddListener(OnLoadSceneButtonClick);
+    }
 
-        // Create 6 inner lists and add them to the outer list.
-        for (int i = 0; i < 6; i++)
+    void OnSaveConfigButtonClick()
+    {
+        SaveProgress();
+        saveConfig = true;
+        textComponentRight.text = "Config Saved";
+    }
+
+    void OnLoadConfigButtonClick()
+    {
+        LoadProgress();
+        loadConfig = true;
+        textComponentRight.text = "Config Loaded";
+    }
+
+    void OnSaveSceneButtonClick() { 
+        if (mode == "Prep")
         {
-            List<RobotSingular> robotList = new List<RobotSingular>();
-            robotToExpand.Add(robotList);
+            SaveScene();
+            textComponentRight.text = "Scene Saved";
+        }
+        else
+        {
+            textComponentRight.text = "Cannot save scene in current mode";
         }
 
-        for (int i = 0; i < 6; i++)
+    }
+
+    void OnLoadSceneButtonClick()
+    {
+        if (mode == "Prep")
         {
-            List<RobotSingular> robotList = new List<RobotSingular>();
-            robotToShrink.Add(robotList);
+            LoadScene();
+            textComponentRight.text = "Scene Loaded";
         }
+        else
+        {
+            textComponentRight.text = "Cannot load scene in current mode";
+        }
+
     }
 
     void FixedUpdate()  
@@ -67,21 +108,31 @@ public class AlgorithmPlayGround : MonoBehaviour
     private void Update()
     {
         KeyStrokeDetection();
-        expandRobot = RobotManager.LeftClickOnRobot();
-        shrinkRobot = RobotManager.RightClickOnRobot();
+        (selectRobot, mousePos) = RobotManager.LeftClickOnRobotSpecial();
 
-        if (expandRobot != null && mode != "Idle")
+        if (selectRobot != null && mode == "Expand")
         {
-            expandRobot.ChangeColor("red", 0.4f + 0.1f * keyboardNum);
-            robotToExpand[keyboardNum - 1].Add(expandRobot);
-            expandRobot.textComponent.text = robotToExpand[keyboardNum - 1].Count.ToString();
+            selectRobot.ChangeColor("red", 0.3f + 0.1f * keyboardNum);
+            robotToExpand[keyboardNum - 1].Add(selectRobot);
+            selectRobot.textComponent.text = robotToExpand[keyboardNum - 1].Count.ToString();
         }
-        else if (shrinkRobot != null && mode != "Idle")
+        else if (selectRobot != null && mode == "Contract")
         {
-            shrinkRobot.ChangeColor("green", 0.4f + 0.1f * keyboardNum);
-            robotToShrink[keyboardNum - 1].Add(shrinkRobot);
-            shrinkRobot.textComponent.text = robotToShrink[keyboardNum - 1].Count.ToString();
+            selectRobot.ChangeColor("green", 0.3f + 0.1f * keyboardNum);
+            robotToShrink[keyboardNum - 1].Add(selectRobot);
+            selectRobot.textComponent.text = robotToShrink[keyboardNum - 1].Count.ToString();
         }
+        else if (selectRobot != null && mode == "Prep")
+        {
+            // remove that robot from the scene
+            RobotManager.RemoveRobot(selectRobot);
+        }
+        else if (selectRobot == null && mode == "Prep" && mousePos != Vector3.zero)
+        {
+            // add robot to the scene
+
+        }
+
 
         if (begin)
         {
@@ -120,12 +171,24 @@ public class AlgorithmPlayGround : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.E))
             {
                 mode = "Expand";
+                keyboardNum = 1;
             }
 
             else if (Input.GetKeyDown(KeyCode.C))
             {
+                keyboardNum = 1;
                 mode = "Contract";
             }
+            else if (Input.GetKeyDown(KeyCode.S))
+            {
+                saveConfig = true;
+                
+            }
+            //else if (Input.GetKeyDown(KeyCode.L))
+            //{
+            //    loadConfig = true;
+            //    LoadProgress();
+            //}
 
             // get the number
             else if (Input.GetKeyDown(KeyCode.Alpha1))
@@ -161,7 +224,7 @@ public class AlgorithmPlayGround : MonoBehaviour
             begin = true;
             mode = "Executing";
         }
-        textComponent.text = mode + " Mode: queue: " + keyboardNum;
+        textComponentLeft.text = mode + " Mode: queue: " + keyboardNum;
 
     }
 
@@ -169,11 +232,162 @@ public class AlgorithmPlayGround : MonoBehaviour
         if (begin == true) {
             if (RobotManager.MotionCheckAll() != true) {
                 motion = false;
-                mode = "Idle";
+                mode = "Prep";
                 begin = false;
+                saveConfig = false;
+                loadConfig = false;
+                textComponentRight.text = "Press E to expand, C to contract, S to save, L to load";
             }
         }
 
+    }
+    public void Reset()
+    {
+        motion = false;
+        mode = "Prep";
+        begin = false;
+        saveConfig = false;
+        loadConfig = false;
+        // clear the list
+
+        textComponentRight.text = "Press E to expand, C to contract, S to save, L to load";
+        textComponentLeft.text = mode + " Mode: queue: " + keyboardNum;
+
+        robotToExpand = new List<List<RobotSingular>>();
+        robotToShrink = new List<List<RobotSingular>>();
+
+        // Create 6 inner lists and add them to the outer list.
+        for (int i = 0; i < 6; i++)
+        {
+            List<RobotSingular> robotList = new List<RobotSingular>();
+            robotToExpand.Add(robotList);
+        }
+
+        for (int i = 0; i < 6; i++)
+        {
+            List<RobotSingular> robotList = new List<RobotSingular>();
+            robotToShrink.Add(robotList);
+        }
+    }
+
+    public void SaveProgress()
+    {
+        ProgressData dataToSave = new ProgressData();
+        dataToSave.robotToExpand = new List<Wrapper>();
+        dataToSave.robotToShrink = new List<Wrapper>();
+
+        // loop through the list and save the data
+        for (int i = 0; i < robotToExpand.Count; i++)
+        {
+            Wrapper wrapper = new Wrapper();
+            wrapper.robots = new List<RobotSingularData>();
+            foreach (RobotSingular robot in robotToExpand[i])
+            {
+                RobotSingularData robotData = robot.GetData();
+                wrapper.robots.Add(robotData);   
+
+            }
+            dataToSave.robotToExpand.Add(wrapper);
+        }
+
+        for (int i = 0; i < robotToShrink.Count; i++)
+        {
+            Wrapper wrapper = new Wrapper();
+            wrapper.robots = new List<RobotSingularData>();
+            foreach (RobotSingular robot in robotToShrink[i])
+            {
+                RobotSingularData robotData = robot.GetData();
+                wrapper.robots.Add(robotData);
+            }
+            dataToSave.robotToShrink.Add(wrapper);
+        }
+
+        ProgressManager.SaveProgress(dataToSave);
+        textComponentRight.text = "Progress Saved";
+
+    }
+
+    public void LoadProgress()
+    {
+        // reset everything
+        Reset();
+        ProgressData loadedData = ProgressManager.LoadProgress();
+        if (loadedData == null)
+        {
+            textComponentRight.text = "Error Loading Progress";
+            return;
+        }
+        List<Wrapper> robotToExpandData = loadedData.robotToExpand;
+        List<Wrapper> robotToShrinkData = loadedData.robotToShrink;
+
+        textComponentRight.text = "Progress Loaded";
+
+        //loop through the list and update the text and color component
+        for (int i = 0; i < robotToExpandData.Count; i++)
+        {
+            foreach (RobotSingularData robotData in robotToExpandData[i].robots)
+            {
+                RobotSingular robot = RobotManager.FindRobotByNumber(robotData.robotNum);
+                if (robot != null)
+                {
+                    robot.SetData(robotData);
+                    robot.ChangeColor("red", 0.3f + 0.1f * (i + 1));
+                    robotToExpand[i].Add(robot);
+                    robot.textComponent.text = robotToExpand[i].Count.ToString();
+                }
+            }
+        }
+
+        for (int i = 0; i < robotToShrinkData.Count; i++)
+        {
+            foreach (RobotSingularData robotData in robotToShrinkData[i].robots)
+            {
+                RobotSingular robot = RobotManager.FindRobotByNumber(robotData.robotNum);
+                if (robot != null)
+                {
+                    robot.SetData(robotData);
+                    robot.ChangeColor("green", 0.3f + 0.1f * (i + 1));
+                    robotToShrink[i].Add(robot);
+                    robot.textComponent.text = robotToShrink[i].Count.ToString();   
+                }
+            }
+        }
+    }
+
+    public void SaveScene()
+    {
+        SceneData dataToSave = new SceneData();
+        dataToSave.robotLocations = new List<RobotLocationData>();
+        // loop through the list and save the data
+        List<RobotSingular> allRobots = RobotManager.GetAllRobots();
+        foreach (RobotSingular robot in allRobots)
+        {
+            RobotLocationData robotData = new RobotLocationData();
+            robotData.robotNum = robot.robotNum;
+            robotData.position = robot.transform.position;
+            dataToSave.robotLocations.Add(robotData);
+        }
+        ProgressManager.SaveScene(dataToSave);
+    }
+
+    public void LoadScene()
+    {
+        SceneData dataToLoad = new SceneData();
+        // clear all the robots first
+        RobotManager.ClearAllRobots();
+        // load the data
+        dataToLoad = ProgressManager.LoadScene();
+        if (dataToLoad == null)
+        {
+            textComponentRight.text = "Error Loading Scene";
+            return;
+        }
+        // loop through the list and update the text and color component
+        foreach (RobotLocationData robotData in dataToLoad.robotLocations)
+        {
+            // create a new robot
+            RobotManager.AddRobot("Robot" + robotData.robotNum, robotData.position);
+        }
     }
 
 }

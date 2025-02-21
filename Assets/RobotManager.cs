@@ -292,8 +292,19 @@ public class RobotManager : MonoBehaviour
         generator.RemoveRobot(robot_name);
     }
 
+    public void RemoveRobot(RobotSingular robot)
+    {
+        generator.RemoveRobot(robot);
+    }
+
     public void AddRobot(string robot_name, Vector2 pos)
     {
+        generator.AddRobot(robot_name, pos);
+    }
+
+    public void AddRobot(Vector2 pos)
+    {
+        string robot_name = "Robot" + generator.GetAllRobots().Count;
         generator.AddRobot(robot_name, pos);
     }
 
@@ -378,6 +389,21 @@ public class RobotManager : MonoBehaviour
         return null;
     }
 
+    public (RobotSingular, Vector3 pos) LeftClickOnRobotSpecial()
+    {
+        if (Input.GetMouseButtonDown(1))
+        {
+            Vector2 mousePosition = camera.ScreenToWorldPoint(Input.mousePosition);
+            RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.zero);
+            if (hit.collider != null)
+            {
+                RobotSingular robot = hit.collider.gameObject.GetComponent<RobotSingular>();
+                return (robot, Input.mousePosition);
+            }
+        }
+        return (null, Input.mousePosition);
+    }
+
     public RobotSingular FindRobotByPos(Vector2 pos) {
         RobotSingular robot;
         Collider2D collider = Physics2D.OverlapPoint(pos);
@@ -433,5 +459,16 @@ public class RobotManager : MonoBehaviour
     public bool MotionCheckAll() { 
         List<RobotSingular> robots = generator.GetAllRobots();
         return MotionCheck(robots);                 
+    }
+
+    public List<RobotSingular> GetAllRobots()
+    {
+        List<RobotSingular> robots = generator.GetAllRobots();
+        return robots;
+    }
+
+    public void ClearAllRobots()
+    {
+        generator.ClearAllRobots();
     }
 }

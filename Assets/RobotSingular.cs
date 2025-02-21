@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.Android;
 public enum State { idle, expand, shrink, expandToOriginal, shrinkToOriginal, wait };
 
-
+[System.Serializable]
 public class RobotSingular : MonoBehaviour
 {
     // constants
@@ -49,23 +49,27 @@ public class RobotSingular : MonoBehaviour
     private Queue<RobotState> stateQueue = new Queue<RobotState>();
     public TextMeshPro textComponent;
     private Vector2 totalForce = Vector2.zero;
-    private int robotNum;
+    public int robotNum;
 
 
     private bool activateDisplay = false;
+    private bool loadFromFile = false;
 
 
     void Awake()
     {
-        growthRate = parameters.growthRate;
-        shrinkRate = parameters.shirnkRate;
-        maxRadius = parameters.maxRadius;
-        minRadius = parameters.minRadius;
-        adhesionStrength = parameters.adhesionStrength;
-        maxAdhesionForce = parameters.maxAdhesionForce;
-        adhesionRangeMax = parameters.adhesionRangeMax;
-        prevPos = transform.position;
-        prevScale = transform.localScale;
+        if (loadFromFile == false)
+        {
+            growthRate = parameters.growthRate;
+            shrinkRate = parameters.shirnkRate;
+            maxRadius = parameters.maxRadius;
+            minRadius = parameters.minRadius;
+            adhesionStrength = parameters.adhesionStrength;
+            maxAdhesionForce = parameters.maxAdhesionForce;
+            adhesionRangeMax = parameters.adhesionRangeMax;
+            prevPos = transform.position;
+            prevScale = transform.localScale;
+        }
     }
 
     void Start()
@@ -469,6 +473,31 @@ public class RobotSingular : MonoBehaviour
 
         }
         previousVelocity = currentVelocity;
+    }
+
+    public RobotSingularData GetData() {
+        RobotSingularData robotData = new RobotSingularData();
+        robotData.growthRate = growthRate;
+        robotData.shrinkRate = shrinkRate;
+        robotData.adhesionStrength = adhesionStrength;
+        robotData.maxAdhesionForce = maxAdhesionForce;
+        robotData.adhesionRangeMax = adhesionRangeMax;
+        robotData.maxRadius = maxRadius;
+        robotData.minRadius = minRadius;
+        robotData.position = transform.position;
+        robotData.robotNum = robotNum;
+        return robotData;
+    }
+
+    public void SetData(RobotSingularData robotData)
+    {
+        growthRate = robotData.growthRate;
+        shrinkRate = robotData.shrinkRate;
+        adhesionStrength = robotData.adhesionStrength;
+        maxAdhesionForce = robotData.maxAdhesionForce;
+        adhesionRangeMax = robotData.adhesionRangeMax;
+        maxRadius = robotData.maxRadius;
+        minRadius = robotData.minRadius;
     }
 }
 

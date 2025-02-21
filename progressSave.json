@@ -1,0 +1,184 @@
+{
+    "robotToExpand": [
+        {
+            "robots": [
+                {
+                    "growthRate": 1.0,
+                    "shrinkRate": 0.800000011920929,
+                    "adhesionStrength": 0.5,
+                    "maxAdhesionForce": 20.0,
+                    "adhesionRangeMax": 1.5,
+                    "maxRadius": 1.25,
+                    "minRadius": 0.8500000238418579,
+                    "position": {
+                        "x": -7.494697093963623,
+                        "y": 0.33023619651794436
+                    },
+                    "robotNum": 81
+                },
+                {
+                    "growthRate": 1.0,
+                    "shrinkRate": 0.800000011920929,
+                    "adhesionStrength": 0.5,
+                    "maxAdhesionForce": 20.0,
+                    "adhesionRangeMax": 1.5,
+                    "maxRadius": 1.25,
+                    "minRadius": 0.8500000238418579,
+                    "position": {
+                        "x": -6.495197772979736,
+                        "y": 0.33028560876846316
+                    },
+                    "robotNum": 82
+                },
+                {
+                    "growthRate": 1.0,
+                    "shrinkRate": 0.800000011920929,
+                    "adhesionStrength": 0.5,
+                    "maxAdhesionForce": 20.0,
+                    "adhesionRangeMax": 1.5,
+                    "maxRadius": 1.25,
+                    "minRadius": 0.8500000238418579,
+                    "position": {
+                        "x": -5.497350215911865,
+                        "y": 0.330163836479187
+                    },
+                    "robotNum": 83
+                },
+                {
+                    "growthRate": 1.0,
+                    "shrinkRate": 0.800000011920929,
+                    "adhesionStrength": 0.5,
+                    "maxAdhesionForce": 20.0,
+                    "adhesionRangeMax": 1.5,
+                    "maxRadius": 1.25,
+                    "minRadius": 0.8500000238418579,
+                    "position": {
+                        "x": -4.49831485748291,
+                        "y": 0.3303433656692505
+                    },
+                    "robotNum": 84
+                },
+                {
+                    "growthRate": 1.0,
+                    "shrinkRate": 0.800000011920929,
+                    "adhesionStrength": 0.5,
+                    "maxAdhesionForce": 20.0,
+                    "adhesionRangeMax": 1.5,
+                    "maxRadius": 1.25,
+                    "minRadius": 0.8500000238418579,
+                    "position": {
+                        "x": -3.498678684234619,
+                        "y": 0.33005285263061526
+                    },
+                    "robotNum": 85
+                }
+            ]
+        },
+        {
+            "robots": []
+        },
+        {
+            "robots": []
+        },
+        {
+            "robots": []
+        },
+        {
+            "robots": []
+        },
+        {
+            "robots": []
+        }
+    ],
+    "robotToShrink": [
+        {
+            "robots": [
+                {
+                    "growthRate": 1.0,
+                    "shrinkRate": 0.800000011920929,
+                    "adhesionStrength": 0.5,
+                    "maxAdhesionForce": 20.0,
+                    "adhesionRangeMax": 1.5,
+                    "maxRadius": 1.25,
+                    "minRadius": 0.8500000238418579,
+                    "position": {
+                        "x": -7.994700908660889,
+                        "y": -0.535647988319397
+                    },
+                    "robotNum": 65
+                },
+                {
+                    "growthRate": 1.0,
+                    "shrinkRate": 0.800000011920929,
+                    "adhesionStrength": 0.5,
+                    "maxAdhesionForce": 20.0,
+                    "adhesionRangeMax": 1.5,
+                    "maxRadius": 1.25,
+                    "minRadius": 0.8500000238418579,
+                    "position": {
+                        "x": -6.99509859085083,
+                        "y": -0.5357824563980103
+                    },
+                    "robotNum": 66
+                },
+                {
+                    "growthRate": 1.0,
+                    "shrinkRate": 0.800000011920929,
+                    "adhesionStrength": 0.5,
+                    "maxAdhesionForce": 20.0,
+                    "adhesionRangeMax": 1.5,
+                    "maxRadius": 1.25,
+                    "minRadius": 0.8500000238418579,
+                    "position": {
+                        "x": -5.99716329574585,
+                        "y": -0.5357774496078491
+                    },
+                    "robotNum": 67
+                },
+                {
+                    "growthRate": 1.0,
+                    "shrinkRate": 0.800000011920929,
+                    "adhesionStrength": 0.5,
+                    "maxAdhesionForce": 20.0,
+                    "adhesionRangeMax": 1.5,
+                    "maxRadius": 1.25,
+                    "minRadius": 0.8500000238418579,
+                    "position": {
+                        "x": -4.997904300689697,
+                        "y": -0.5358253717422485
+                    },
+                    "robotNum": 68
+                },
+                {
+                    "growthRate": 1.0,
+                    "shrinkRate": 0.800000011920929,
+                    "adhesionStrength": 0.5,
+                    "maxAdhesionForce": 20.0,
+                    "adhesionRangeMax": 1.5,
+                    "maxRadius": 1.25,
+                    "minRadius": 0.8500000238418579,
+                    "position": {
+                        "x": -2.9988770484924318,
+                        "y": -0.535361647605896
+                    },
+                    "robotNum": 70
+                }
+            ]
+        },
+        {
+            "robots": []
+        },
+        {
+            "robots": []
+        },
+        {
+            "robots": []
+        },
+        {
+            "robots": []
+        },
+        {
+            "robots": []
+        }
+    ]
+}

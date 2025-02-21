@@ -91,6 +91,15 @@ public class Generator : MonoBehaviour
         return robotList;
     }
 
+    public void ClearAllRobots()
+    {
+        foreach (GameObject robot in robots.Values)
+        {
+            Destroy(robot);
+        }
+        robots.Clear();
+    }
+
     public void RemoveRobot(string robotName)
     {
         if (robots.ContainsKey(robotName))
@@ -102,6 +111,22 @@ public class Generator : MonoBehaviour
         {
             Debug.LogWarning("Robot with name " + robotName + " does not exist");
         }
+        RenameRobots();
+    }
+
+    public void RemoveRobot(RobotSingular robot)
+    {
+        string robotName = robot.name;
+        if (robots.ContainsKey(robotName))
+        {
+            Destroy(robots[robotName]);
+            robots.Remove(robotName);
+        }
+        else
+        {
+            Debug.LogWarning("Robot with name " + robotName + " does not exist");
+        }
+        RenameRobots();
     }
 
     void RemoveDefinedRobots()
@@ -112,4 +137,20 @@ public class Generator : MonoBehaviour
             RemoveRobot(robotName);
         }
     }
+
+    // if a robot has been removed, then rename all the robots to keep the order
+    void RenameRobots() {
+        int robotNumber = 1;
+        foreach (KeyValuePair<string, GameObject> entry in robots)
+        {
+            string oldName = entry.Key;
+            string newName = "Robot" + robotNumber;
+            entry.Value.name = newName;
+            robots.Remove(oldName);
+            robots.Add(newName, entry.Value);
+            robotNumber++;
+        }
+
+    }
+
 }
