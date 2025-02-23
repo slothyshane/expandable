@@ -50,8 +50,7 @@ public class ProgressManager : MonoBehaviour
 
     public void SaveScene(SceneData sceneData)
     {
-        SceneData dataToSave = new SceneData();
-        string jsonData = JsonUtility.ToJson(dataToSave, true);
+        string jsonData = JsonUtility.ToJson(sceneData, true);
         File.WriteAllText(saveSceneFilePath, jsonData);
         Debug.Log("Scene Saved to: " + saveSceneFilePath);
     }

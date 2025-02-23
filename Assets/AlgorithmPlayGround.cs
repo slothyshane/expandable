@@ -6,6 +6,7 @@ using Unity.Burst.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 /// <summary>
 /// PlayGround
 /// Press E to enable expansion mode
@@ -110,6 +111,12 @@ public class AlgorithmPlayGround : MonoBehaviour
         KeyStrokeDetection();
         (selectRobot, mousePos) = RobotManager.LeftClickOnRobotSpecial();
 
+        if (EventSystem.current.IsPointerOverGameObject()) // Make sure we are not clicking on UI
+        {
+            // continue
+            return;
+        }
+
         if (selectRobot != null && mode == "Expand")
         {
             selectRobot.ChangeColor("red", 0.3f + 0.1f * keyboardNum);
@@ -130,6 +137,10 @@ public class AlgorithmPlayGround : MonoBehaviour
         else if (selectRobot == null && mode == "Prep" && mousePos != Vector3.zero)
         {
             // add robot to the scene
+            Vector2 pos = new Vector2(mousePos.x, mousePos.y);
+            // convert mouse position to world position
+            pos = camera.ScreenToWorldPoint(pos);
+            RobotManager.AddRobot(pos);
 
         }
 

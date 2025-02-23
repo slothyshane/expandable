@@ -304,7 +304,7 @@ public class RobotManager : MonoBehaviour
 
     public void AddRobot(Vector2 pos)
     {
-        string robot_name = "Robot" + generator.GetAllRobots().Count;
+        string robot_name = "Robot" + (generator.GetAllRobots().Count + 1);
         generator.AddRobot(robot_name, pos);
     }
 
@@ -391,7 +391,7 @@ public class RobotManager : MonoBehaviour
 
     public (RobotSingular, Vector3 pos) LeftClickOnRobotSpecial()
     {
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(0))
         {
             Vector2 mousePosition = camera.ScreenToWorldPoint(Input.mousePosition);
             RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.zero);
@@ -400,8 +400,12 @@ public class RobotManager : MonoBehaviour
                 RobotSingular robot = hit.collider.gameObject.GetComponent<RobotSingular>();
                 return (robot, Input.mousePosition);
             }
+            else
+            {
+                return (null, Input.mousePosition);
+            }
         }
-        return (null, Input.mousePosition);
+        return (null, Vector3.zero);
     }
 
     public RobotSingular FindRobotByPos(Vector2 pos) {

@@ -11,8 +11,8 @@
                     "maxRadius": 1.25,
                     "minRadius": 0.8500000238418579,
                     "position": {
-                        "x": -7.494697093963623,
-                        "y": 0.33023619651794436
+                        "x": -7.494748592376709,
+                        "y": 0.3302512764930725
                     },
                     "robotNum": 81
                 },
@@ -25,8 +25,8 @@
                     "maxRadius": 1.25,
                     "minRadius": 0.8500000238418579,
                     "position": {
-                        "x": -6.495197772979736,
-                        "y": 0.33028560876846316
+                        "x": -6.4952473640441898,
+                        "y": 0.33030033111572268
                     },
                     "robotNum": 82
                 },
@@ -39,8 +39,8 @@
                     "maxRadius": 1.25,
                     "minRadius": 0.8500000238418579,
                     "position": {
-                        "x": -5.497350215911865,
-                        "y": 0.330163836479187
+                        "x": -5.4973978996276859,
+                        "y": 0.3301783800125122
                     },
                     "robotNum": 83
                 },
@@ -53,8 +53,8 @@
                     "maxRadius": 1.25,
                     "minRadius": 0.8500000238418579,
                     "position": {
-                        "x": -4.49831485748291,
-                        "y": 0.3303433656692505
+                        "x": -4.498361587524414,
+                        "y": 0.3303579092025757
                     },
                     "robotNum": 84
                 },
@@ -67,18 +67,160 @@
                     "maxRadius": 1.25,
                     "minRadius": 0.8500000238418579,
                     "position": {
-                        "x": -3.498678684234619,
-                        "y": 0.33005285263061526
+                        "x": -3.498724937438965,
+                        "y": 0.3300716280937195
                     },
                     "robotNum": 85
                 }
             ]
         },
         {
-            "robots": []
+            "robots": [
+                {
+                    "growthRate": 1.0,
+                    "shrinkRate": 0.800000011920929,
+                    "adhesionStrength": 0.5,
+                    "maxAdhesionForce": 20.0,
+                    "adhesionRangeMax": 1.5,
+                    "maxRadius": 1.25,
+                    "minRadius": 0.8500000238418579,
+                    "position": {
+                        "x": -6.995147228240967,
+                        "y": -0.5357679128646851
+                    },
+                    "robotNum": 66
+                },
+                {
+                    "growthRate": 1.0,
+                    "shrinkRate": 0.800000011920929,
+                    "adhesionStrength": 0.5,
+                    "maxAdhesionForce": 20.0,
+                    "adhesionRangeMax": 1.5,
+                    "maxRadius": 1.25,
+                    "minRadius": 0.8500000238418579,
+                    "position": {
+                        "x": -5.99721097946167,
+                        "y": -0.5357626676559448
+                    },
+                    "robotNum": 67
+                },
+                {
+                    "growthRate": 1.0,
+                    "shrinkRate": 0.800000011920929,
+                    "adhesionStrength": 0.5,
+                    "maxAdhesionForce": 20.0,
+                    "adhesionRangeMax": 1.5,
+                    "maxRadius": 1.25,
+                    "minRadius": 0.8500000238418579,
+                    "position": {
+                        "x": -4.997950077056885,
+                        "y": -0.5358089208602905
+                    },
+                    "robotNum": 68
+                },
+                {
+                    "growthRate": 1.0,
+                    "shrinkRate": 0.800000011920929,
+                    "adhesionStrength": 0.5,
+                    "maxAdhesionForce": 20.0,
+                    "adhesionRangeMax": 1.5,
+                    "maxRadius": 1.25,
+                    "minRadius": 0.8500000238418579,
+                    "position": {
+                        "x": -3.9984660148620607,
+                        "y": -0.5356216430664063
+                    },
+                    "robotNum": 69
+                },
+                {
+                    "growthRate": 1.0,
+                    "shrinkRate": 0.800000011920929,
+                    "adhesionStrength": 0.5,
+                    "maxAdhesionForce": 20.0,
+                    "adhesionRangeMax": 1.5,
+                    "maxRadius": 1.25,
+                    "minRadius": 0.8500000238418579,
+                    "position": {
+                        "x": -2.9989123344421388,
+                        "y": -0.5353490114212036
+                    },
+                    "robotNum": 70
+                }
+            ]
         },
         {
-            "robots": []
+            "robots": [
+                {
+                    "growthRate": 1.0,
+                    "shrinkRate": 0.800000011920929,
+                    "adhesionStrength": 0.5,
+                    "maxAdhesionForce": 20.0,
+                    "adhesionRangeMax": 1.5,
+                    "maxRadius": 1.25,
+                    "minRadius": 0.8500000238418579,
+                    "position": {
+                        "x": -6.4951252937316898,
+                        "y": -1.4015628099441529
+                    },
+                    "robotNum": 50
+                },
+                {
+                    "growthRate": 1.0,
+                    "shrinkRate": 0.800000011920929,
+                    "adhesionStrength": 0.5,
+                    "maxAdhesionForce": 20.0,
+                    "adhesionRangeMax": 1.5,
+                    "maxRadius": 1.25,
+                    "minRadius": 0.8500000238418579,
+                    "position": {
+                        "x": -5.497405529022217,
+                        "y": -1.4011098146438599
+                    },
+                    "robotNum": 51
+                },
+                {
+                    "growthRate": 1.0,
+                    "shrinkRate": 0.800000011920929,
+                    "adhesionStrength": 0.5,
+                    "maxAdhesionForce": 20.0,
+                    "adhesionRangeMax": 1.5,
+                    "maxRadius": 1.25,
+                    "minRadius": 0.8500000238418579,
+                    "position": {
+                        "x": -4.497621536254883,
+                        "y": -1.400816798210144
+                    },
+                    "robotNum": 52
+                },
+                {
+                    "growthRate": 1.0,
+                    "shrinkRate": 0.800000011920929,
+                    "adhesionStrength": 0.5,
+                    "maxAdhesionForce": 20.0,
+                    "adhesionRangeMax": 1.5,
+                    "maxRadius": 1.25,
+                    "minRadius": 0.8500000238418579,
+                    "position": {
+                        "x": -3.498647689819336,
+                        "y": -1.4000979661941529
+                    },
+                    "robotNum": 53
+                },
+                {
+                    "growthRate": 1.0,
+                    "shrinkRate": 0.800000011920929,
+                    "adhesionStrength": 0.5,
+                    "maxAdhesionForce": 20.0,
+                    "adhesionRangeMax": 1.5,
+                    "maxRadius": 1.25,
+                    "minRadius": 0.8500000238418579,
+                    "position": {
+                        "x": -2.4993457794189455,
+                        "y": -1.400732159614563
+                    },
+                    "robotNum": 54
+                }
+            ]
         },
         {
             "robots": []
@@ -102,10 +244,10 @@
                     "maxRadius": 1.25,
                     "minRadius": 0.8500000238418579,
                     "position": {
-                        "x": -7.994700908660889,
-                        "y": -0.535647988319397
+                        "x": -2.9994592666625978,
+                        "y": -2.2664318084716799
                     },
-                    "robotNum": 65
+                    "robotNum": 38
                 },
                 {
                     "growthRate": 1.0,
@@ -116,10 +258,10 @@
                     "maxRadius": 1.25,
                     "minRadius": 0.8500000238418579,
                     "position": {
-                        "x": -6.99509859085083,
-                        "y": -0.5357824563980103
+                        "x": -2.000187397003174,
+                        "y": -2.2666211128234865
                     },
-                    "robotNum": 66
+                    "robotNum": 39
                 },
                 {
                     "growthRate": 1.0,
@@ -130,38 +272,10 @@
                     "maxRadius": 1.25,
                     "minRadius": 0.8500000238418579,
                     "position": {
-                        "x": -5.99716329574585,
-                        "y": -0.5357774496078491
+                        "x": -1.4999479055404664,
+                        "y": -1.4008759260177613
                     },
-                    "robotNum": 67
-                },
-                {
-                    "growthRate": 1.0,
-                    "shrinkRate": 0.800000011920929,
-                    "adhesionStrength": 0.5,
-                    "maxAdhesionForce": 20.0,
-                    "adhesionRangeMax": 1.5,
-                    "maxRadius": 1.25,
-                    "minRadius": 0.8500000238418579,
-                    "position": {
-                        "x": -4.997904300689697,
-                        "y": -0.5358253717422485
-                    },
-                    "robotNum": 68
-                },
-                {
-                    "growthRate": 1.0,
-                    "shrinkRate": 0.800000011920929,
-                    "adhesionStrength": 0.5,
-                    "maxAdhesionForce": 20.0,
-                    "adhesionRangeMax": 1.5,
-                    "maxRadius": 1.25,
-                    "minRadius": 0.8500000238418579,
-                    "position": {
-                        "x": -2.9988770484924318,
-                        "y": -0.535361647605896
-                    },
-                    "robotNum": 70
+                    "robotNum": 55
                 }
             ]
         },

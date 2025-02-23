@@ -71,6 +71,7 @@ public class Generator : MonoBehaviour
 
     public void AddRobot(string robotName, Vector2 pos)
     {
+        int robotNum = 0;
         if (robots.ContainsKey(robotName))
         {
             Debug.LogWarning("Robot with name " + robotName + " already exists");
@@ -78,6 +79,12 @@ public class Generator : MonoBehaviour
         }
         GameObject robot = Instantiate(circlePrefab, pos, Quaternion.identity, transform);
         robot.name = robotName;
+        TextMeshPro textComponent = robot.GetComponentInChildren<TextMeshPro>();
+        if (textComponent != null)
+            //parse the int from the robotName
+            robotNum = int.Parse(robotName.Substring(5));
+            textComponent.text = robotNum.ToString();
+        Debug.Log("Adding robot " + robotName + " at position " + pos); 
         robots.Add(robotName, robot);
     }
 
@@ -141,16 +148,29 @@ public class Generator : MonoBehaviour
     // if a robot has been removed, then rename all the robots to keep the order
     void RenameRobots() {
         int robotNumber = 1;
+        // Create a new dictionary to store the renamed robots
+        Dictionary<string, GameObject> renamedRobots = new Dictionary<string, GameObject>();
+        // Iterate through the existing robots and rename them
         foreach (KeyValuePair<string, GameObject> entry in robots)
         {
+            GameObject robot = entry.Value;
             string oldName = entry.Key;
             string newName = "Robot" + robotNumber;
-            entry.Value.name = newName;
-            robots.Remove(oldName);
-            robots.Add(newName, entry.Value);
+            // Rename the robot
+            robot.name = newName;
+            // change the text in the robot
+            TextMeshPro textComponent = robot.GetComponentInChildren<TextMeshPro>();
+            if (textComponent != null)
+                textComponent.text = robotNumber.ToString();
+            renamedRobots.Add(newName, robot);
             robotNumber++;
         }
-
+        // Clear the old dictionary and assign the renamed robots
+        robots.Clear();
+        foreach (KeyValuePair<string, GameObject> entry in renamedRobots)
+        {
+            robots.Add(entry.Key, entry.Value);
+        }
     }
 
 }
