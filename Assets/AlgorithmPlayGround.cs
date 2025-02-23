@@ -247,7 +247,7 @@ public class AlgorithmPlayGround : MonoBehaviour
                 begin = false;
                 saveConfig = false;
                 loadConfig = false;
-                textComponentRight.text = "Press E to expand, C to contract, S to save, L to load";
+                textComponentRight.text = "Press E to expand, C to contract";
             }
         }
 
@@ -261,7 +261,7 @@ public class AlgorithmPlayGround : MonoBehaviour
         loadConfig = false;
         // clear the list
 
-        textComponentRight.text = "Press E to expand, C to contract, S to save, L to load";
+        textComponentRight.text = "Press E to expand, C to contract";
         textComponentLeft.text = mode + " Mode: queue: " + keyboardNum;
 
         robotToExpand = new List<List<RobotSingular>>();

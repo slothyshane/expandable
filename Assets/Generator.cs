@@ -158,8 +158,14 @@ public class Generator : MonoBehaviour
             string newName = "Robot" + robotNumber;
             // Rename the robot
             robot.name = newName;
+            RobotSingular robotSingular = robot.GetComponent<RobotSingular>();
+            if (robotSingular != null)
+            {
+                robotSingular.robotNum = robotNumber;
+            }
             // change the text in the robot
             TextMeshPro textComponent = robot.GetComponentInChildren<TextMeshPro>();
+
             if (textComponent != null)
                 textComponent.text = robotNumber.ToString();
             renamedRobots.Add(newName, robot);
